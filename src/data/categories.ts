@@ -215,15 +215,7 @@ Give this file to your AI assistant with a prompt like:
 
 The AI has everything it needs to build the integration in one pass.`;
 
-const sharedResources: Resource[] = [
-  { label: "OPUS Platform", url: "https://app.opus.com" },
-  { label: "OPUS Python SDK", url: "https://pypi.org/project/opus-aaico/" },
-  { label: "SDK GitHub", url: "https://github.com/moibrahim-applied/opus-aaico-python" },
-  { label: "Event Page", url: "https://luma.com/m418ekz6" },
-];
-
 const procurementResources: Resource[] = [
-  ...sharedResources,
   { label: "WF 1: Supplier Screening & Selection", url: "https://workflow.opus.com/workflow/KSaSaSZiaUhkpo2V" },
   { label: "WF 2: Supplier Onboarding", url: "https://workflow.opus.com/workflow/zGwuRF7FUDJKalu1" },
   { label: "WF 3: Cost Optimization & Negotiation", url: "https://workflow.opus.com/workflow/yqDU9B7mSv3YKgfM" },
@@ -232,13 +224,11 @@ const procurementResources: Resource[] = [
 ];
 
 const bankingResources: Resource[] = [
-  ...sharedResources,
   { label: "WF: Swiss Mortgage Application Processor", url: "https://workflow.opus.com/workflow/WYdlc81aLV62XBOc" },
   { label: "Live UI: Swiss Bank Mortgage", url: "https://swiss-bank-demo.vercel.app" },
 ];
 
 const hikingResources: Resource[] = [
-  ...sharedResources,
   { label: "WF: Swiss Alpine Trail Architect", url: "https://workflow.opus.com/workflow/J1WRnK73G4NJ0d2F" },
   { label: "Live UI: TrailForge", url: "https://alpine-trail-forge.com" },
 ];
