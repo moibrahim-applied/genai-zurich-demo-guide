@@ -222,6 +222,27 @@ const sharedResources: Resource[] = [
   { label: "Event Page", url: "https://luma.com/m418ekz6" },
 ];
 
+const procurementResources: Resource[] = [
+  ...sharedResources,
+  { label: "WF 1: Supplier Screening & Selection", url: "https://workflow.opus.com/workflow/KSaSaSZiaUhkpo2V" },
+  { label: "WF 2: Supplier Onboarding", url: "https://workflow.opus.com/workflow/zGwuRF7FUDJKalu1" },
+  { label: "WF 3: Cost Optimization & Negotiation", url: "https://workflow.opus.com/workflow/yqDU9B7mSv3YKgfM" },
+  { label: "WF 4: Contract Compliance & Risk Management", url: "https://workflow.opus.com/workflow/lpnn8qbI9CrBIz1P" },
+  { label: "Live UI: Procurement Dashboard", url: "https://proc-demo.vercel.app/" },
+];
+
+const bankingResources: Resource[] = [
+  ...sharedResources,
+  { label: "WF: Swiss Mortgage Application Processor", url: "https://workflow.opus.com/workflow/WYdlc81aLV62XBOc" },
+  { label: "Live UI: Swiss Bank Mortgage", url: "https://swiss-bank-demo.vercel.app" },
+];
+
+const hikingResources: Resource[] = [
+  ...sharedResources,
+  { label: "WF: Swiss Alpine Trail Architect", url: "https://workflow.opus.com/workflow/J1WRnK73G4NJ0d2F" },
+  { label: "Live UI: TrailForge", url: "https://alpine-trail-forge.com" },
+];
+
 export const categories: Category[] = [
   {
     id: "procurement",
@@ -297,7 +318,7 @@ The dashboard should have:
           "This is the OPUS API skill file. It contains every endpoint, every data type, the complete integration pattern with working code. You paste this into any AI coding assistant -- Claude, Cursor, Copilot -- and tell it to connect your UI to the workflow. The AI has everything it needs: authentication, the initiate-execute-poll-results flow, file uploads via presigned URLs, even a complete React integration example. One paste, one prompt, the integration is done.",
       },
     ],
-    resources: sharedResources,
+    resources: procurementResources,
   },
   {
     id: "banking",
@@ -372,7 +393,7 @@ Use Framer Motion for smooth transitions between phases. Recharts for gauges and
           "With the OPUS skill file, any AI coding assistant knows how to trigger workflows, upload documents, poll for results, and handle human review steps -- the full integration pattern.",
       },
     ],
-    resources: sharedResources,
+    resources: bankingResources,
   },
   {
     id: "hiking",
@@ -465,6 +486,6 @@ Mock data for 3 real Swiss trails: Eiger Trail (Grindelwald), Oeschinensee Loop 
           "The skill file contains every OPUS API endpoint, every data type, every workflow pattern. Any AI assistant that reads it can build the integration layer between this UI and the workflow engine.",
       },
     ],
-    resources: sharedResources,
+    resources: hikingResources,
   },
 ];
