@@ -60,7 +60,7 @@ export default function Home() {
           <p className="text-sm text-gray-500 mb-6">{selected.subtitle}</p>
 
           <div className="border border-gray-200 rounded-lg bg-white">
-            {selected.acts.map((act, i) => (
+            {selected.acts.map((act) => (
               <CollapsibleSection
                 key={act.title}
                 title={act.title}
