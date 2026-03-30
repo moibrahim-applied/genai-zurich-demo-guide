@@ -64,7 +64,7 @@ export default function Home() {
               <CollapsibleSection
                 key={act.title}
                 title={act.title}
-                defaultOpen={i === 0}
+                defaultOpen={false}
               >
                 <Checklist items={act.checklist} />
                 <CodeBlock code={act.prompt} language={act.promptLabel} />
