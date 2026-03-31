@@ -328,21 +328,29 @@ The dashboard should have:
 
 The workflow should process a mortgage application end-to-end:
 
-1. DOCUMENT INTAKE: Accept applicant documents (ID, salary certificates, tax returns, property appraisal, bank statements). Use text extraction agents to parse each document type and extract structured data (applicant name, income, employment details, property value, existing liabilities).
+1. DOCUMENT INTAKE: Accept applicant documents (ID, salary certificates, tax returns, property appraisal, bank statements, Pillar 2 statement, Pillar 3a statement). Use text extraction agents to parse each document type and extract structured data (applicant name, income, employment details, property value, existing liabilities, asset breakdown by type).
 
 2. VERIFICATION: Run parallel verification checks -- identity verification agent, employment verification agent, and property valuation agent. Each agent validates the extracted data against known patterns and flags inconsistencies. Collect all verification results.
 
-3. AFFORDABILITY ANALYSIS: Calculate affordability using Swiss mortgage rules -- theoretical interest rate (currently 5%), amortization requirements (must reduce to 65% LTV within 15 years), maintenance costs (1% of property value). Compute total housing cost ratio (must be under 33% of gross income). Calculate required equity (minimum 20%, max 10% from Pillar 2).
+3. AFFORDABILITY & FINMA EQUITY ANALYSIS: Calculate affordability per FINMA-recognized Swiss Banking Association (SBVg) self-regulation rules (Richtlinien fuer Hypothekarfinanzierungen, Section 3.2) and FINMA Circular 2019/2, Section 4.2:
+
+   - Theoretical interest rate: Use 5% (not the current market rate) to ensure long-term affordability against rising interest rates.
+   - Annual costs: Calculate theoretical interest (5% of mortgage amount) + amortization + maintenance costs (1% of property value per year).
+   - Affordability threshold: Total annual housing costs must not exceed one-third (33.3%) of gross income.
+   - Second income: Only count a co-applicant's income if joint and several liability (Solidarschuldnerschaft) is established.
+   - Amortization: The mortgage must be amortized to two-thirds (66.7%) of the lending value within 15 years.
+   - Equity requirements (FINMA-supervised): Minimum 20% equity required. Of this, at least 10% must be "hard" equity (cash savings, securities, Pillar 3a withdrawals). Pillar 2 (pension fund) assets may NOT count toward this first 10%. The remaining 10% may come from Pillar 2 pledging or withdrawal.
+   - If the hard equity requirement is not met, flag the application for manual review.
 
 4. LTV & RISK SCORING: Calculate loan-to-value ratio using the lower of purchase price and bank valuation. Run a risk scoring agent that evaluates credit risk based on income stability, debt-to-income ratio, property location (canton risk factors), and applicant profile. Assign a risk grade (A through E).
 
-5. DECISION ROUTING: If risk grade A or B and affordability passes -- auto-approve with standard rate. If risk grade C -- route to human underwriter for review with full case file. If risk grade D or E -- auto-decline with explanation letter.
+5. DECISION ROUTING: If risk grade A or B and affordability passes and FINMA equity check passes -- auto-approve with standard rate. If affordability marginally fails (within 2% of threshold) or risk grade C -- route to human underwriter for exception review with full case file. If risk grade D or E or hard equity not met -- auto-decline with explanation letter.
 
-6. COMMUNICATION: Generate a personalized decision letter (approval with rate offer, or decline with reasons). Send notification to the applicant and to the relationship manager.
+6. COMMUNICATION: Generate a personalized decision letter (approval with rate offer, conditional approval with requirements, or decline with specific reasons referencing the failed checks). Send notification to the applicant and to the relationship manager.
 
 Include human review checkpoints at verification and decision stages. All monetary values in CHF.`,
         talkTrack:
-          "This workflow encodes actual Swiss mortgage regulations -- the 33% affordability rule, the 20% equity requirement, Pillar 2 limits. The AI agents don't just process documents, they apply real compliance logic.",
+          "This workflow encodes actual FINMA regulations and Swiss Banking Association rules -- the 33.3% affordability threshold at 5% theoretical rate, the hard equity requirement where Pillar 2 cannot count toward the first 10%, joint liability checks for second income, and amortization to two-thirds within 15 years. Every check references the specific regulatory section.",
       },
       {
         title: "Act 2: Generate UI",
@@ -358,17 +366,26 @@ The application should have these phases that the user progresses through:
 
 1. Property Discovery: Clean form to enter property details (address, canton, asking price, property type, living area, construction year). Show a Mapbox map that pins the property location.
 
-2. Document Upload: A drag-and-drop zone for uploading mortgage documents (ID, salary slips, tax returns, property appraisal). Show upload progress and document type auto-detection badges.
+2. Applicant Profile: Form for applicant and co-applicant details -- name, income, employer, employment date. A toggle for "Joint and Several Liability (Solidarschuldnerschaft)" that enables/disables the co-applicant income inclusion. Asset entry section split into: hard equity (savings, securities, Pillar 3a) and soft equity (Pillar 2). Show a live equity summary bar that visualizes the 10% hard / 10% soft split with color coding (green = met, red = not met).
 
-3. Processing View: An animated multi-step processing screen showing 8 stages (Document Extraction, Identity Verification, Income Verification, Property Valuation, Affordability Check, LTV Calculation, Compliance Check, Risk Scoring). Each stage shows a progress spinner, then a green checkmark when complete. Display extracted data in real-time as each stage completes.
+3. Document Upload: A drag-and-drop zone for uploading mortgage documents (ID, salary slips, tax returns, property appraisal, Pillar 2 statement, Pillar 3a statement, bank statements). Show upload progress and document type auto-detection badges.
 
-4. Decision Screen: Show the mortgage offer with: LTV ratio gauge, affordability ratio gauge, risk grade badge (A-E), and three rate options (SARON variable, 5-year fixed, 10-year fixed) as selectable cards with monthly payment calculations in CHF.
+4. Processing View: An animated multi-step processing screen showing 10 stages (Document Extraction, Identity Verification, Employment Verification, Property Valuation, Income Assessment, FINMA Equity Check, Affordability Calculation, LTV Calculation, Compliance Check, Risk Scoring). Each stage shows a progress spinner, then a green checkmark or red X when complete. Display extracted data and check results in real-time as each stage completes.
 
-5. Case File: A complete summary page with all extracted data, verification results, and the decision rationale in a printable format.
+5. FINMA Compliance Dashboard: A dedicated section showing:
+   - Affordability ratio gauge (threshold line at 33.3%, theoretical rate at 5%)
+   - Equity breakdown chart: hard equity vs Pillar 2 with the 10%/10% split clearly visualized
+   - Amortization schedule showing path to 66.7% LTV within 15 years
+   - Joint liability status indicator
+   - Overall FINMA compliance status (pass/fail with specific rule references)
 
-Use Framer Motion for smooth transitions between phases. Recharts for gauges and charts. All currency in CHF. Mock realistic Swiss mortgage data (Zurich property, CHF 1.2M).`,
+6. Decision Screen: Show the mortgage offer with: LTV ratio gauge, affordability ratio gauge, FINMA equity status badge, risk grade badge (A-E), and three rate options (SARON variable, 5-year fixed, 10-year fixed) as selectable cards with monthly payment calculations in CHF. If marginally failing, show "Referred for Exception Review" with the specific threshold gap.
+
+7. Case File: A complete summary page with all extracted data, verification results, FINMA compliance checks, and the decision rationale in a printable format. Include regulatory references (SBVg Section 3.2, FINMA Circular 2019/2 Section 4.2).
+
+Use Framer Motion for smooth transitions between phases. Recharts for gauges and charts. All currency in CHF. Mock realistic Swiss mortgage data: Kilchberg ZH property at CHF 1,280,000, dual-income couple with CHF 210,000 combined gross, CHF 260,000 hard equity -- this scenario should marginally fail affordability at 34.7% to demonstrate the exception routing.`,
         talkTrack:
-          "The mortgage UI walks through the entire application lifecycle -- from property search to final decision letter.",
+          "The UI now has a dedicated FINMA compliance dashboard -- it visualizes the hard equity split, the affordability ratio against the 33.3% threshold, and the amortization schedule. The mock data intentionally fails affordability by 1.4% to show how the system routes edge cases to human review.",
       },
       {
         title: "Act 3: Connect with OPUS Skill File",
