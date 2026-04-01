@@ -230,7 +230,7 @@ const bankingResources: Resource[] = [
 
 const hikingResources: Resource[] = [
   { label: "WF: Swiss Alpine Trail Architect", url: "https://workflow.opus.com/workflow/J1WRnK73G4NJ0d2F" },
-  { label: "Live UI: TrailForge", url: "https://alpine-trail-forge.com" },
+  { label: "Live UI: TrailForge", url: "https://alpine-trail-forge.base44.app/" },
 ];
 
 export const categories: Category[] = [
